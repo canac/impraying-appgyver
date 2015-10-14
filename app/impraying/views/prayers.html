@@ -4,4 +4,17 @@
       I'm Praying
     </super-navbar-title>
   </super-navbar>
+  <form class="card" ng-submit="prayers.createPrayer()">
+    <label class="item item-input">
+      <input type="text" placeholder="What is your prayer request?" ng-model="prayers.request"></input>
+    </label>
+    <div class="item item-divider" ng-show="prayers.request">
+      <button type="submit" class="button button-block button-positive">Create request</button>
+    </div>
+  </form>
+  <ul class="list">
+    <div ng-repeat="prayer in prayers.feed">
+      <prayer-preview data-prayer-id="prayer.id"></prayer-preview>
+    </div>
+  </ul>
 </div>

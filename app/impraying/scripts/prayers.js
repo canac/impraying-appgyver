@@ -13,7 +13,33 @@ angular.module('impraying').run(function($rootScope, ngFB, User) {
   });
 });
 
+angular.module('impraying').constant('PrayerModel', supersonic.data.model('Prayer'));
+
 angular.module('impraying').constant('UserModel', supersonic.data.model('User'));
+
+angular.module('impraying').directive('prayerPreview', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      prayerId: '=prayerId',
+    },
+    templateUrl: '_prayer-preview.html',
+    controller: function($scope, PrayerModel, UserModel) {
+      $scope.ready = false;
+
+      // Lookup the prayer given its prayer id
+      PrayerModel.find($scope.prayerId).then(function(prayer) {
+        $scope.prayer = prayer;
+
+        // Lookup the prayer's author given its user id
+        UserModel.find(prayer.author).then(function(author) {
+          $scope.author = author;
+          $scope.ready = true;
+        });
+      });
+    },
+  };
+});
 
 angular.module('impraying').controller('LoginCtrl', function(User) {
   this.facebookLogin = User.login;
@@ -22,4 +48,23 @@ angular.module('impraying').controller('LoginCtrl', function(User) {
   this.continue = function() {
     supersonic.ui.initialView.dismiss();
   };
+});
+
+angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerModel) {
+  this.request = '';
+  this.createPrayer = function() {
+    var newPrayer = new PrayerModel({
+      author: $scope.user.id,
+      content: this.request,
+      timestamp: new Date().toISOString(),
+    });
+    newPrayer.save();
+
+    this.request = '';
+  };
+
+  var _this = this;
+  PrayerModel.findAll().then(function(prayers) {
+    _this.feed = prayers;
+  });
 });
