@@ -1,4 +1,2 @@
-angular.module('impraying', [
-  // Declare here all AngularJS dependencies that are shared by the impraying module.
-  'supersonic'
-]);
+// Declare here all AngularJS dependencies that are shared by the impraying module
+angular.module('impraying', []);

@@ -60,6 +60,6 @@ tab-bar tab-bar-item marker-top:selected {
   background-color: #1596f7;
 }
 
-tab-bar-item#index {
+tab-bar-item#prayers {
   background-image: url(icons/home.svg);
 }
