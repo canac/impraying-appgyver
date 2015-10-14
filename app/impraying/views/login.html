@@ -1,0 +1,23 @@
+<super-navbar>
+  <super-navbar-title>
+    Login
+  </super-navbar-title>
+</super-navbar>
+
+<div class="padding" ng-controller="LoginCtrl as login">
+  <div class="text-center" ng-show="login.user.loggedIn">
+    <img ng-src="http://graph.facebook.com/{{login.user.facebookId}}/picture" />
+    <h1>{{login.user.name}}</h1>
+    <div class="row">
+      <div class="col">
+        <button class="button button-positive" ng-click="login.facebookLogout()"><i class="super-social-facebook"></i> Logout</button>
+      </div>
+      <div class="col">
+        <button class="button button-positive" ng-click="login.continue()">Continue <i class="super-arrow-right-a"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="text-center" ng-show="!login.user.loggedIn">
+    <button class="button button-positive" ng-click="login.facebookLogin()"><i class="super-social-facebook"></i> Login</button>
+  </div>
+</div>

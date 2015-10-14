@@ -11,6 +11,6 @@ module.exports =
     }
   ]
 
-  # initialView:
-  #   id: "initialView"
-  #   location: "impraying#initial-view"
+  initialView:
+    id: "login"
+    location: "impraying#login"
