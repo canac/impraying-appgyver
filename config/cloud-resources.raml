@@ -9,19 +9,19 @@ traits:
           steroidsApiKey:
             type: string
             example: exampleapikey
-            default: 059c1fe8c8c84a0e021972134e37bd72f77336be9e7ac8c924ea7f2b32b05df6
+            default: 9d9c97829135eaf5fc90f73cda7b7c2c2aa07f9ddc2d6a862766e09005aeeda0
           steroidsAppId:
             type: integer
             example: 1234
-            default: 82588
+            default: 82917
   
 schemas:
-  - User_collection: '{"$schema":"http://json-schema.org/schema","title":"User collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{},"required":[]}}}}'
-  - User_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{"object":{"type":"object","properties":{},"required":[]}}}'
+  - User_collection: '{"$schema":"http://json-schema.org/schema","title":"User collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{"facebookId":{"type":"string"},"name":{"type":"string"},"friends":{"type":"string"}},"required":[]}}}}'
+  - User_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{"object":{"type":"object","properties":{"facebookId":{"type":"string"},"name":{"type":"string"},"friends":{"type":"string"}},"required":[]}}}'
   - Prayer_collection: '{"$schema":"http://json-schema.org/schema","title":"Prayer collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Prayer representation","properties":{"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}}'
   - Prayer_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Prayer representation","properties":{"object":{"type":"object","properties":{"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}'
-  - Comment_collection: '{"$schema":"http://json-schema.org/schema","title":"Comment collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"prayerId":{"type":"string"}},"required":[]}}}}'
-  - Comment_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"object":{"type":"object","properties":{"prayerId":{"type":"string"}},"required":[]}}}'
+  - Comment_collection: '{"$schema":"http://json-schema.org/schema","title":"Comment collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"prayerId":{"type":"string"},"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}}'
+  - Comment_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"object":{"type":"object","properties":{"prayerId":{"type":"string"},"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}'
   - Notification_collection: '{"$schema":"http://json-schema.org/schema","title":"Notification collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Notification representation","properties":{"commentId":{"type":"string"}},"required":[]}}}}'
   - Notification_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Notification representation","properties":{"object":{"type":"object","properties":{"commentId":{"type":"string"}},"required":[]}}}'
 
