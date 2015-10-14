@@ -1,4 +1,6 @@
-angular.module('impraying').run(function(ngFB) {
+angular.module('impraying').run(function($rootScope, ngFB, User) {
+  Object.defineProperty($rootScope, 'user', { get: User.getUser });
+
   var baseUrl = window.location.href.slice(0, window.location.href.lastIndexOf('/'));
 
   // Initalize the Facebook authentication module using LocalStorage instead of the default
@@ -14,7 +16,6 @@ angular.module('impraying').run(function(ngFB) {
 angular.module('impraying').constant('UserModel', supersonic.data.model('User'));
 
 angular.module('impraying').controller('LoginCtrl', function(User) {
-  Object.defineProperty(this, 'user', { get: User.getUser });
   this.facebookLogin = User.login;
   this.facebookLogout = User.logout;
 
