@@ -1,0 +1,149 @@
+#%RAML 0.8
+title: Steroids Data
+mediaType: application/json
+baseUri: https://rest-api.appgyver.com/v1
+
+traits:
+    - securedBySteroidsApiKey:
+        headers:
+          steroidsApiKey:
+            type: string
+            example: exampleapikey
+            default: 059c1fe8c8c84a0e021972134e37bd72f77336be9e7ac8c924ea7f2b32b05df6
+          steroidsAppId:
+            type: integer
+            example: 1234
+            default: 82588
+  
+schemas:
+  - User_collection: '{"$schema":"http://json-schema.org/schema","title":"User collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{},"required":[]}}}}'
+  - User_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical User representation","properties":{"object":{"type":"object","properties":{},"required":[]}}}'
+  - Prayer_collection: '{"$schema":"http://json-schema.org/schema","title":"Prayer collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Prayer representation","properties":{"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}}'
+  - Prayer_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Prayer representation","properties":{"object":{"type":"object","properties":{"author":{"type":"string"},"content":{"type":"string"},"timestamp":{"type":"string"}},"required":[]}}}'
+  - Comment_collection: '{"$schema":"http://json-schema.org/schema","title":"Comment collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"prayerId":{"type":"string"}},"required":[]}}}}'
+  - Comment_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Comment representation","properties":{"object":{"type":"object","properties":{"prayerId":{"type":"string"}},"required":[]}}}'
+  - Notification_collection: '{"$schema":"http://json-schema.org/schema","title":"Notification collection","type":"object","properties":{"objects":{"type":"array","items":{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Notification representation","properties":{"commentId":{"type":"string"}},"required":[]}}}}'
+  - Notification_member: '{"$schema":"http://json-schema.org/schema","type":"object","description":"The canonical Notification representation","properties":{"object":{"type":"object","properties":{"commentId":{"type":"string"}},"required":[]}}}'
+
+resourceTypes:
+  - dolan_db_collection:
+      usage: This resourceType should be used for any collection of items
+      is: [ securedBySteroidsApiKey ]
+      get:
+        description: |
+          {
+            "action": "collection"
+          }
+        responses:
+          200:
+            description: |
+              {
+                "rootKey": "objects"
+              }
+            body:
+              application/json:
+                schema: <<resourcePathName>>_collection # e.g cars
+      post:
+        description: |
+          {
+            "action": "create",
+            "rootKey": "object"
+          }
+        body:
+          application/json:
+            schema: <<resourcePathName>>_member
+        responses:
+          200:
+            description: |
+              {
+                "rootKey": "object"
+              }
+            body:
+              application/json:
+                schema: <<resourcePathName>>_member # e.g. car
+
+  - dolan_db_member:
+      usage: This resourceType should be used for any built.io item
+      is: [ securedBySteroidsApiKey ]
+      get:
+        description: |
+          {
+            "action": "find"
+          }
+        responses:
+          200:
+            description: |
+              {
+                "rootKey": "object"
+              }
+            body:
+              application/json:
+                schema: <<resourcePathName>>_member # e.g. car
+      put:
+        description: |
+          {
+            "action": "update",
+            "rootKey": "object"
+          }
+        body:
+          application/json:
+            schema: <<resourcePathName>>_member
+        responses:
+          200:
+            description: |
+              {
+                "rootKey": "object"
+              }
+            body:
+              application/json:
+                schema: <<resourcePathName>>_member
+      delete:
+        description: |
+          {
+            "action": "destroy"
+          }
+        responses:
+          200:
+
+
+/User:
+  description: |
+    {
+      "resourceName": "User",
+      "identifierKey": "id"
+    }
+  type: dolan_db_collection
+  /{id}:
+    type: dolan_db_member
+
+/Prayer:
+  description: |
+    {
+      "resourceName": "Prayer",
+      "identifierKey": "id"
+    }
+  type: dolan_db_collection
+  /{id}:
+    type: dolan_db_member
+
+/Comment:
+  description: |
+    {
+      "resourceName": "Comment",
+      "identifierKey": "id"
+    }
+  type: dolan_db_collection
+  /{id}:
+    type: dolan_db_member
+
+/Notification:
+  description: |
+    {
+      "resourceName": "Notification",
+      "identifierKey": "id"
+    }
+  type: dolan_db_collection
+  /{id}:
+    type: dolan_db_member
+
+
