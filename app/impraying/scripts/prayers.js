@@ -52,6 +52,8 @@ angular.module('impraying').controller('LoginCtrl', function(User) {
 });
 
 angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerModel) {
+  var _this = this;
+
   this.request = '';
   this.createPrayer = function() {
     var newPrayer = new PrayerModel({
@@ -59,14 +61,21 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
       content: this.request,
       timestamp: new Date().toISOString(),
     });
-    newPrayer.save();
+    newPrayer.save().then(function() {
+      _this.feed.push(newPrayer);
+      $scope.$apply();
+    });
 
     this.request = '';
   };
 
-  var _this = this;
-  var unsubscribe = PrayerModel.all().whenChanged(function(prayers) {
-    _this.feed = prayers;
-    $scope.$apply();
-  });
+  this.feed = [];
+  this.refresh = function() {
+    PrayerModel.findAll().then(function(prayers) {
+      _this.feed = prayers;
+      $scope.$apply();
+    });
+  };
+
+  this.refresh();
 });
