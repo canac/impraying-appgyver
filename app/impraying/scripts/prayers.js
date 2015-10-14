@@ -11,10 +11,13 @@ angular.module('impraying').run(function(ngFB) {
   });
 });
 
+angular.module('impraying').constant('UserModel', supersonic.data.model('User'));
+
 angular.module('impraying').controller('LoginCtrl', function(User) {
-  this.user = User.getUser();
+  Object.defineProperty(this, 'user', { get: User.getUser });
   this.facebookLogin = User.login;
   this.facebookLogout = User.logout;
+
   this.continue = function() {
     supersonic.ui.initialView.dismiss();
   };

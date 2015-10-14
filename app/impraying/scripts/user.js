@@ -1,16 +1,16 @@
-angular.module('impraying').service('User', function(ngFB) {
+angular.module('impraying').service('User', function(ngFB, UserModel, $q) {
   var User = {
     // Authenticate with Facebook
     login: function() {
-      ngFB.login({ scope: 'public_profile,user_friends' }).then(function(response) {
-        loadProfile();
+      return ngFB.login({ scope: 'public_profile,user_friends' }).then(function(response) {
+        return loadProfile();
       });
     },
 
     // Unauthenticate with Facebook
     logout: function() {
-      ngFB.logout().then(function() {
-        setUser(null);
+      return ngFB.logout().then(function() {
+        return setUser(null);
       });
     },
 
@@ -18,27 +18,35 @@ angular.module('impraying').service('User', function(ngFB) {
     getUser: function() {
       return currentUser;
     },
-  };
 
-  // Represents the currently logged in user
-  var currentUser = {
     // Determine whether or not the provided user is the currently logged in user
     isCurrentUser: function(userId) {
-      return userId === currentUser.id;
+      return currentUser && userId === currentUser.id;
     },
   };
+
+  // The User model representing the logged in user, or null if the user is logged out
+  var currentUser;
 
   // Set the current user to the provided object which either contains properties for the user's id
   // and name or is null to represent an unlogged in
   var setUser = function(user) {
     if (user === null) {
-      currentUser.facebookId = null;
-      currentUser.name = null;
-      currentUser.loggedIn = false;
+      currentUser = null;
+      return $q.when(currentUser);
     } else {
-      currentUser.facebookId = user.id;
-      currentUser.name = user.name;
-      currentUser.loggedIn = true;
+      // Try to find an existing user with this Facebook id
+      var query = { facebookId: user.id };
+      return UserModel.findAll({ query: JSON.stringify(query) }).then(function(users) {
+        // If no users were not found, create a new one
+        currentUser = users.length > 0 ? users[0] : new UserModel({ facebookId: user.id });
+        currentUser.name = user.name;
+        currentUser.friends = user.friends.data.map(function(friend) {
+          return friend.id;
+        });
+
+        return currentUser.save();
+      });
     }
   };
 
@@ -48,15 +56,15 @@ angular.module('impraying').service('User', function(ngFB) {
       path: '/me',
       params: { fields: 'id,name,friends{id}' },
     }).then(function(user) {
-      setUser(user);
-      return user;
+      return setUser(user);
     });
   };
 
   // Start out as logged out, then try to load the user's profile, which will only succeed if they
   // are still logged in and their access token is still valid
-  setUser(null);
-  loadProfile();
+  setUser(null).then(function() {
+    return loadProfile();
+  });
 
   return User;
 });
