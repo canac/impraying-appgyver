@@ -35,6 +35,7 @@ angular.module('impraying').directive('prayerPreview', function() {
         UserModel.find(prayer.author).then(function(author) {
           $scope.author = author;
           $scope.ready = true;
+          $scope.$apply();
         });
       });
     },
@@ -64,7 +65,8 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
   };
 
   var _this = this;
-  PrayerModel.findAll().then(function(prayers) {
+  var unsubscribe = PrayerModel.all().whenChanged(function(prayers) {
     _this.feed = prayers;
+    $scope.$apply();
   });
 });
