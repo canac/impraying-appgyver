@@ -3,6 +3,9 @@
     <super-navbar-title>
       Prayer
     </super-navbar-title>
+    <super-navbar-button ng-click="prayer.refresh()" side="right">
+      Refresh
+    </super-navbar-button>
   </super-navbar>
   <div class="card" ng-hide="prayer.loading">
     <div class="item item-divider">
@@ -13,8 +16,23 @@
       <h2 class="request">{{prayer.prayer.content}}</h2>
       <p class="timestamp">{{prayer.prayer.timestamp | date:'medium'}} (<span am-time-ago="prayer.prayer.timestamp"></span>)</p>
     </div>
-    <div class="item item-divider text-center" ng-show="isCurrentUser(prayer.prayer.author)">
-      <a class="button button-assertive" ng-click="prayer.deletePrayer()"><span class="super-trash-b"> Delete</span></a>
+    <div class="item">
+      <form class="card new-prayer" ng-submit="prayer.createComment()">
+        <label class="item item-input">
+          <input type="text" placeholder="Add a comment!" ng-model="prayer.comment">
+        </label>
+        <div class="item item-divider" ng-show="prayer.comment">
+          <button type="submit" class="button button-block button-positive">Create comment</button>
+        </div>
+      </form>
+      <ul class="list">
+        <div ng-repeat="comment in prayer.comments | orderBy:'timestamp':true">
+          <comment-preview data-comment="comment"></comment-preview>
+        </div>
+      </ul>
+    </div>
+    <div class="item item-divider text-center" ng-show="user.isCurrentUser(prayer.prayer.author)">
+      <a class="button col button-assertive" ng-click="prayer.deletePrayer()"><span class="super-trash-b"> Delete</span></a>
     </div>
   </div>
 </div>

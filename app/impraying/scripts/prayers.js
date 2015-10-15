@@ -13,9 +13,9 @@ angular.module('impraying').run(function($rootScope, ngFB, User) {
   });
 });
 
-angular.module('impraying').constant('PrayerModel', supersonic.data.model('Prayer'));
-
 angular.module('impraying').constant('UserModel', supersonic.data.model('User'));
+angular.module('impraying').constant('PrayerModel', supersonic.data.model('Prayer'));
+angular.module('impraying').constant('CommentModel', supersonic.data.model('Comment'));
 
 angular.module('impraying').directive('prayerPreview', function() {
   return {
@@ -38,6 +38,32 @@ angular.module('impraying').directive('prayerPreview', function() {
           $scope.$apply();
         });
       });
+    },
+  };
+});
+
+angular.module('impraying').directive('commentPreview', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      comment: '=comment',
+    },
+    templateUrl: '_comment-preview.html',
+    controller: function($scope, User, PrayerModel, UserModel) {
+      $scope.loading = true;
+
+      // Lookup the comment's author given its user id
+      UserModel.find($scope.comment.author).then(function(author) {
+        $scope.author = author;
+        $scope.loading = false;
+        $scope.$apply();
+      });
+
+      $scope.deleteComment = function() {
+        $scope.comment.delete();
+      };
+
+      $scope.isCurrentUser = User.isCurrentUser;
     },
   };
 });
@@ -80,23 +106,41 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
   this.refresh();
 });
 
-angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerModel, UserModel, User) {
+angular.module('impraying').controller('PrayerCtrl', function($scope, User, UserModel, PrayerModel, CommentModel) {
   this.loading = true;
 
   var _this = this;
-  supersonic.ui.views.current.params.onValue(function(params) {
-    var prayerId = params.id;
-    if (!prayerId) {
-      return;
-    }
 
-    _this.loading = true;
-    _this.prayer = null;
-    _this.author = null;
+  this.createComment = function() {
+    var newComment = new CommentModel({
+      prayerId: _this.prayer.id,
+      author: $scope.user.id,
+      content: this.comment,
+      timestamp: new Date().toISOString(),
+    });
+    newComment.save().then(function() {
+      _this.comments.push(newComment);
+      $scope.$apply();
+    });
+
+    this.comment = '';
+  };
+
+  this.isCurrentUser = User.isCurrentUser;
+
+  this.deletePrayer = function() {
+    this.prayer.delete();
+    supersonic.ui.layers.pop();
+  };
+
+  this.refresh = function() {
+    this.loading = true;
+    this.prayer = null;
+    this.author = null;
     $scope.$apply();
 
     // Lookup the prayer given its prayer id
-    PrayerModel.find(prayerId).then(function(prayer) {
+    PrayerModel.find(this.prayerId).then(function(prayer) {
       _this.prayer = prayer;
 
       // Lookup the prayer's author given its user id
@@ -106,12 +150,19 @@ angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerMode
         $scope.$apply();
       });
     });
-  });
 
-  this.isCurrentUser = User.isCurrentUser;
-
-  this.deletePrayer = function() {
-    this.prayer.delete();
-    supersonic.ui.layers.pop();
+    // Lookup the prayer's comments given its prayer id
+    var query = { prayerId: this.prayerId };
+    CommentModel.findAll({ query: JSON.stringify(query) }).then(function(comments) {
+      _this.comments = comments;
+      $scope.$apply();
+    });
   };
+
+  supersonic.ui.views.current.params.onValue(function(params) {
+    _this.prayerId = params.id;
+    if (_this.prayerId) {
+      _this.refresh();
+    }
+  });
 });

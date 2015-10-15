@@ -1,0 +1,6 @@
+<li class="item item-avatar item-icon-right item-text-wrap" ng-hide="loading">
+  <img ng-src="http://graph.facebook.com/{{author.facebookId}}/picture" />
+  <a class="button button-assertive" style="float: right;" ng-click="deleteComment()" ng-show="isCurrentUser(comment.author)"><i class="super-trash-b"></i></a>
+  <h2>{{author.name}} (<span am-time-ago="comment.timestamp"></span>)</h2>
+  <p>{{comment.content}}</p>
+</li>
