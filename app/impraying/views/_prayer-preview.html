@@ -1,4 +1,4 @@
-<li class="item item-avatar item-icon-right item-text-wrap" ng-show="ready">
+<li class="item item-avatar item-icon-right item-text-wrap" view-id="prayer?id={{prayer.id}}" ng-hide="loading">
   <img ng-src="http://graph.facebook.com/{{author.facebookId}}/picture" />
   <h2>{{author.name}} (<span am-time-ago="prayer.timestamp"></span>)</h2>
   <p>{{prayer.content}}</p>

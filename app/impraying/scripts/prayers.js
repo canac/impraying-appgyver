@@ -25,7 +25,7 @@ angular.module('impraying').directive('prayerPreview', function() {
     },
     templateUrl: '_prayer-preview.html',
     controller: function($scope, PrayerModel, UserModel) {
-      $scope.ready = false;
+      $scope.loading = true;
 
       // Lookup the prayer given its prayer id
       PrayerModel.find($scope.prayerId).then(function(prayer) {
@@ -34,7 +34,7 @@ angular.module('impraying').directive('prayerPreview', function() {
         // Lookup the prayer's author given its user id
         UserModel.find(prayer.author).then(function(author) {
           $scope.author = author;
-          $scope.ready = true;
+          $scope.loading = false;
           $scope.$apply();
         });
       });
