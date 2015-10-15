@@ -1,0 +1,17 @@
+<div class="padding" ng-controller="PrayerCtrl as prayer">
+  <super-navbar>
+    <super-navbar-title>
+      Prayer
+    </super-navbar-title>
+  </super-navbar>
+  <div class="card" ng-hide="prayer.loading">
+    <div class="item item-divider">
+      <h1>{{prayer.author.name}}</h1>
+    </div>
+    <div class="item item-avatar item-text-wrap">
+      <img ng-src="http://graph.facebook.com/{{prayer.author.facebookId}}/picture" />
+      <h2 class="request">{{prayer.prayer.content}}</h2>
+      <p class="timestamp">{{prayer.prayer.timestamp | date:'medium'}} (<span am-time-ago="prayer.prayer.timestamp"></span>)</p>
+    </div>
+  </div>
+</div>

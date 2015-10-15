@@ -79,3 +79,32 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
 
   this.refresh();
 });
+
+angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerModel, UserModel) {
+  this.loading = true;
+
+  var _this = this;
+  supersonic.ui.views.current.params.onValue(function(params) {
+    var prayerId = params.id;
+    if (!prayerId) {
+      return;
+    }
+
+    _this.loading = true;
+    _this.prayer = null;
+    _this.author = null;
+    $scope.$apply();
+
+    // Lookup the prayer given its prayer id
+    PrayerModel.find(prayerId).then(function(prayer) {
+      _this.prayer = prayer;
+
+      // Lookup the prayer's author given its user id
+      UserModel.find(prayer.author).then(function(author) {
+        _this.author = author;
+        _this.loading = false;
+        $scope.$apply();
+      });
+    });
+  });
+});

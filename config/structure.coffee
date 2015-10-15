@@ -11,6 +11,13 @@ module.exports =
     }
   ]
 
+  preloads: [
+    {
+      id: "prayer"
+      location: "impraying#prayer"
+    }
+  ]
+
   initialView:
     id: "login"
     location: "impraying#login"
