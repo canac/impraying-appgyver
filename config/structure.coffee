@@ -9,6 +9,11 @@ module.exports =
       id: "prayers"
       location: "impraying#prayers" # Supersonic module#view type navigation
     }
+    {
+      title: "Notifications"
+      id: "notifications"
+      location: "impraying#notifications" # Supersonic module#view type navigation
+    }
   ]
 
   preloads: [

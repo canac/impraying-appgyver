@@ -16,6 +16,7 @@ angular.module('impraying').run(function($rootScope, ngFB, User) {
 angular.module('impraying').constant('UserModel', supersonic.data.model('User'));
 angular.module('impraying').constant('PrayerModel', supersonic.data.model('Prayer'));
 angular.module('impraying').constant('CommentModel', supersonic.data.model('Comment'));
+angular.module('impraying').constant('NotificationModel', supersonic.data.model('Notification'));
 
 angular.module('impraying').directive('prayerPreview', function() {
   return {
@@ -68,6 +69,45 @@ angular.module('impraying').directive('commentPreview', function() {
   };
 });
 
+angular.module('impraying').directive('notificationPreview', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      notification: '=notification',
+    },
+    templateUrl: '_notification-preview.html',
+    controller: function($scope, $q, User, UserModel, PrayerModel, CommentModel) {
+      $scope.loading = true;
+
+      // Lookup the comment associated with the notification
+      CommentModel.find($scope.notification.commentId).then(function(comment) {
+        $scope.comment = comment;
+
+        // Lookup the prayer associated with the notification
+        var prayerPromise = PrayerModel.find(comment.prayerId);
+        prayerPromise.then(function(prayer) {
+          $scope.prayer = prayer;
+        });
+
+        // Lookup the comment's author
+        var authorPromise = UserModel.find(comment.author);
+        authorPromise.then(function(author) {
+          $scope.author = author;
+        });
+
+        // Update the view and unhide it when all data is finished loading
+        $q.when(prayerPromise, authorPromise).then(function() {
+          $scope.loading = false;
+        });
+      });
+
+      $scope.deleteNotification = function() {
+        $scope.notification.delete();
+      };
+    },
+  };
+});
+
 angular.module('impraying').controller('LoginCtrl', function(User) {
   this.facebookLogin = User.login;
   this.facebookLogout = User.logout;
@@ -115,7 +155,7 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
   this.refresh();
 });
 
-angular.module('impraying').controller('PrayerCtrl', function($scope, User, UserModel, PrayerModel, CommentModel) {
+angular.module('impraying').controller('PrayerCtrl', function($scope, User, UserModel, PrayerModel, CommentModel, NotificationModel) {
   this.loading = true;
 
   var _this = this;
@@ -130,6 +170,15 @@ angular.module('impraying').controller('PrayerCtrl', function($scope, User, User
     newComment.save().then(function() {
       _this.comments.push(newComment);
       $scope.$apply();
+
+      // Notify the prayer's author when someone else comments on it
+      if (newComment.author !== _this.prayer.author) {
+        newNotification = new NotificationModel({
+          userId: _this.prayer.author,
+          commentId: newComment.id,
+        });
+        newNotification.save();
+      }
     });
 
     this.comment = '';
@@ -174,4 +223,27 @@ angular.module('impraying').controller('PrayerCtrl', function($scope, User, User
       _this.refresh();
     }
   });
+});
+
+angular.module('impraying').controller('NotificationsCtrl', function($scope, NotificationModel) {
+  var _this = this;
+
+  this.feed = [];
+  this.refresh = function() {
+    if (!$scope.user) {
+      return;
+    }
+
+    var query = { userId: $scope.user.id };
+    NotificationModel.findAll({ query: JSON.stringify(query) }).then(function(notifications) {
+      _this.notifications = notifications;
+      $scope.$apply();
+    });
+  };
+
+  $scope.$watch('user', function(newValue, oldValue) {
+    _this.refresh();
+  });
+
+  this.refresh();
 });

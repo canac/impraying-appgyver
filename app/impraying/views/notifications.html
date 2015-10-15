@@ -1,0 +1,13 @@
+<div class="padding" ng-controller="NotificationsCtrl as notifications">
+  <super-navbar>
+    <super-navbar-title>
+      I'm Praying
+    </super-navbar-title>
+    <super-navbar-button ng-click="notifications.refresh()" side="right">
+      Refresh
+    </super-navbar-button>
+  </super-navbar>
+  <ul class="list">
+    <notification-preview data-notification="notification" ng-repeat="notification in notifications.notifications | orderBy:'-'"></notification-preview>
+  </ul>
+</div>

@@ -27,13 +27,9 @@ tab-bar {
 tab-bar tab-bar-item {
   color: #b0b1b4;
   font-family: "Avenir";
-  font-size: 10px;
+  font-size: 20px;
 }
 
 tab-bar tab-bar-item:selected {
   color: #1596f7;
-}
-
-tab-bar-item#prayers {
-  background-image: url(icons/home.svg);
 }
