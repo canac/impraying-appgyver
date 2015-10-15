@@ -16,8 +16,6 @@
     </div>
   </form>
   <ul class="list">
-    <div ng-repeat="prayer in prayers.feed">
-      <prayer-preview data-prayer-id="prayer.id"></prayer-preview>
-    </div>
+    <prayer-preview data-prayer-id="prayer.id" ng-repeat="prayer in prayers.feed | orderBy:'-timestamp'"></prayer-preview>
   </ul>
 </div>

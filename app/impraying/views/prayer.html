@@ -26,9 +26,7 @@
         </div>
       </form>
       <ul class="list">
-        <div ng-repeat="comment in prayer.comments | orderBy:'timestamp':true">
-          <comment-preview data-comment="comment"></comment-preview>
-        </div>
+        <comment-preview data-comment="comment" ng-repeat="comment in prayer.comments | orderBy:'-timestamp'"></comment-preview>
       </ul>
     </div>
     <div class="item item-divider text-center" ng-show="user.isCurrentUser(prayer.prayer.author)">
