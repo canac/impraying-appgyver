@@ -41,11 +41,21 @@ angular.module('impraying').service('User', function(ngFB, UserModel, $q) {
         // If no users were not found, create a new one
         currentUser = users.length > 0 ? users[0] : new UserModel({ facebookId: user.id });
         currentUser.name = user.name;
-        currentUser.friends = user.friends.data.map(function(friend) {
+
+        // Convert the Facebook ids into user ids
+        var friendFacebookIds = user.friends.data.map(function(friend) {
           return friend.id;
         });
 
-        return currentUser.save();
+        friendFacebookIds.push(user.id);
+        var query = { facebookId: { $in: friendFacebookIds } };
+        return UserModel.findAll({ query: JSON.stringify(query) }).then(function(users) {
+          currentUser.friends = users.map(function(user) {
+            return user.id;
+          });
+
+          return currentUser.save();
+        });
       });
     }
   };
