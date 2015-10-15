@@ -80,7 +80,7 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
   this.refresh();
 });
 
-angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerModel, UserModel) {
+angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerModel, UserModel, User) {
   this.loading = true;
 
   var _this = this;
@@ -107,4 +107,11 @@ angular.module('impraying').controller('PrayerCtrl', function($scope, PrayerMode
       });
     });
   });
+
+  this.isCurrentUser = User.isCurrentUser;
+
+  this.deletePrayer = function() {
+    this.prayer.delete();
+    supersonic.ui.layers.pop();
+  };
 });

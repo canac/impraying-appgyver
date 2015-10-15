@@ -13,5 +13,8 @@
       <h2 class="request">{{prayer.prayer.content}}</h2>
       <p class="timestamp">{{prayer.prayer.timestamp | date:'medium'}} (<span am-time-ago="prayer.prayer.timestamp"></span>)</p>
     </div>
+    <div class="item item-divider text-center" ng-show="isCurrentUser(prayer.prayer.author)">
+      <a class="button button-assertive" ng-click="prayer.deletePrayer()"><span class="super-trash-b"> Delete</span></a>
+    </div>
   </div>
 </div>
