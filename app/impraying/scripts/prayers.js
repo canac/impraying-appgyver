@@ -97,11 +97,20 @@ angular.module('impraying').controller('PrayersCtrl', function($scope, PrayerMod
 
   this.feed = [];
   this.refresh = function() {
-    PrayerModel.findAll().then(function(prayers) {
+    if (!$scope.user) {
+      return;
+    }
+
+    var query = { author: { $in: $scope.user.friends } };
+    PrayerModel.findAll({ query: JSON.stringify(query) }).then(function(prayers) {
       _this.feed = prayers;
       $scope.$apply();
     });
   };
+
+  $scope.$watch('user', function(newValue, oldValue) {
+    _this.refresh();
+  });
 
   this.refresh();
 });
